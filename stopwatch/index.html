@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StopWatch</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        width: 100%;
+        height: 100vh;
+        background-image: url('https://cdn.pixabay.com/photo/2016/06/02/02/33/triangles-1430105_1280.png');
+        background-position: center;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        padding: 1rem;
+        max-width: 1200px;
+        text-align: center;
+        position: relative;
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: #fff;
+    }
+
+    .time {
+        padding: 1rem 0;
+        font-size: 2rem;
+    }
+
+    h1 {
+        color: #020202;
+    }
+
+    button {
+        padding: 0.4rem 1rem;
+        margin: 0 0.2rem;
+        border-radius: 10px;
+        border: 1px solid #f8f8f8;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+        color: #f8f8f8;
+    }
+
+    .loops {
+        margin-top: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #f8f8f8;
+        padding: 1rem;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #f8f8f8;
+    }
+
+    .loops p {
+        margin: 0.5rem 0;
+    }
+</style>
+<body>
+    <div class="container">
+        <h1>Stopwatch</h1>
+        <p class="time">
+            <span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span>
+        </p>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+        <button id="addLoop">Add Loop</button>
+        <button id="deleteLoop">Delete Loop</button>
+        <div class="loops" id="loopsBox">
+            <h2>Loops</h2>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            let minutes = 0;
+            let seconds = 0;
+            let tens = 0;
+            let Interval;
+
+            const appendMinutes = document.querySelector('#minutes');
+            const appendSeconds = document.querySelector('#seconds');
+            const appendTens = document.querySelector('#tens');
+
+            const startBtn = document.querySelector('#start');
+            const stopBtn = document.querySelector('#stop');
+            const resetBtn = document.querySelector('#reset');
+            const addLoopBtn = document.querySelector('#addLoop');
+            const deleteLoopBtn = document.querySelector('#deleteLoop');
+            const loopsBox = document.querySelector('#loopsBox');
+
+            const startTimer = () => {
+                tens++;
+                if (tens <= 9) {
+                    appendTens.innerHTML = '0' + tens;
+                } else {
+                    appendTens.innerHTML = tens;
+                }
+
+                if (tens > 99) {
+                    seconds++;
+                    appendSeconds.innerHTML = seconds <= 9 ? '0' + seconds : seconds;
+                    tens = 0;
+                    appendTens.innerHTML = '00';
+                }
+
+                if (seconds > 59) {
+                    minutes++;
+                    appendMinutes.innerHTML = minutes <= 9 ? '0' + minutes : minutes;
+                    seconds = 0;
+                    appendSeconds.innerHTML = '00';
+                }
+            };
+
+            startBtn.onclick = () => {
+                clearInterval(Interval);
+                Interval = setInterval(startTimer, 10);
+            };
+
+            stopBtn.onclick = () => {
+                clearInterval(Interval);
+            };
+
+            resetBtn.onclick = () => {
+                clearInterval(Interval);
+                tens = 0;
+                seconds = 0;
+                minutes = 0;
+                appendTens.innerHTML = '00';
+                appendSeconds.innerHTML = '00';
+                appendMinutes.innerHTML = '00';
+            };
+
+            addLoopBtn.onclick = () => {
+                const loopTime = `${appendMinutes.innerHTML}:${appendSeconds.innerHTML}:${appendTens.innerHTML}`;
+                const loopItem = document.createElement('p');
+                loopItem.textContent = loopTime;
+                loopsBox.appendChild(loopItem);
+            };
+            deleteLoopBtn.onclick = () => {
+                const lastLoop = loopsBox.querySelector('p:last-child');
+                if (lastLoop) {
+                    loopsBox.removeChild(lastLoop);
+                }
+            };
+        };
+    </script>
+</body>
+</html>
